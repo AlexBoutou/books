@@ -25,13 +25,14 @@ def return_books_links_from_single_search(query,page):
         book_list.append(f'https://www.goodreads.com/{end_of_book_url}')
     return [book_list, number_of_books_to_get]
 
-def return_all_book_links_from_search(query):
+def return_all_book_links_from_search(query,get_all_results=False):
     book_list, number_of_books_to_get=return_books_links_from_single_search(query,1)
 
-    number_of_pages_to_parse = int(number_of_books_to_get/19+1)
+    if get_all_results:
+        number_of_pages_to_parse = int(number_of_books_to_get/19+1)
 
-    for i in range (2,number_of_pages_to_parse):
-        book_list.extend(return_books_links_from_single_search(query,i)[0])
+        for i in range (2,number_of_pages_to_parse):
+            book_list.extend(return_books_links_from_single_search(query,i)[0])
 
     return book_list
 
@@ -86,6 +87,8 @@ def check_book_has_french_version(editions_link):
     if nb_of_editions_pages >1:
         for i in range (2,nb_of_editions_pages):
             french_editions.extend(return_books_editions_from_single_page(editions_link,i)[0])
+    if french_editions == []:
+        return 'No French Editions for this book'
     return french_editions
 
 def get_number_of_editions_from_soup(soup):
