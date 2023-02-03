@@ -52,10 +52,13 @@ def return_book_info_from_link(book_link):
 def find_editions_in_soup(soup):
     work_id = 0
     for s in soup.find_all("a"):
-        if ("work" in s.get('href')):
-            if "quotes" in s.get('href'):
-                work_id = s.get('href').split("quotes/")[1]
-                return f"https://www.goodreads.com/work/editions/{work_id}"
+        try:
+            if ("work" in s.get('href')):
+                if "quotes" in s.get('href'):
+                    work_id = s.get('href').split("quotes/")[1]
+                    return f"https://www.goodreads.com/work/editions/{work_id}"
+        except TypeError:
+            pass
 
 def get_editions_for_work(edition_url, page):
     print(f"Search GoodReads Editions for {edition_url} at page {page}")
@@ -95,7 +98,7 @@ def get_number_of_editions_from_soup(soup):
     nb_of_editions = soup.find_all("span", class_="smallText")
     for n in nb_of_editions:
         if "Showing" in n.string:
-            return int(re.search('-(.*)of', n.string).group(1))
+            return int(re.search('of(.*)', n.string).group(1))
     return None
 
     
